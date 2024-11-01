@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+  font-family: "Graphik";
+  src: url(./fonts/GraphikRegular.otf) format("opentype");
+}
+
+body {
+  font-family: "Graphik", sans-serif;
+}
+
+
+.map {
+  background-image: url(./../assets/map.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
