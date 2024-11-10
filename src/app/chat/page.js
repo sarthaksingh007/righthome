@@ -1,16 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
-import Sidebar from '../components/Sidebar';
+import { useState } from 'react';
 import ChatArea from '../components/ChatArea';
-import MessageInput from '../components/MessageInput';
 import Header from '../components/Header';
+import LoginButton from "../components/LoginButton";
+import LogoutButton from "../components/LogoutButton";
+import MessageInput from '../components/MessageInput';
+import Sidebar from '../components/Sidebar';
 import Welcome from '../components/Welcome';
 
 const api_url = "https://vercel-pexapi.vercel.app/";
 
 export default function ChatPage() {
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
   const [messages, setMessages] = useState([]);
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [chatHistory, setChatHistory] = useState([]); // State for chat history
@@ -90,15 +94,36 @@ export default function ChatPage() {
     }
   };
 
+  // MainComponent to display login/logout based on authentication status
+  const MainComponent = () => {
+    return (
+      <div className="auth-buttons">
+        {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+      </div>
+    );
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>Please log in to access the chat.</p>
+        <LoginButton />
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen">
-      <Sidebar 
-        isExpanded={sidebarExpanded} 
-        toggleSidebar={toggleSidebar} 
+      <Sidebar
+        isExpanded={sidebarExpanded}
+        toggleSidebar={toggleSidebar}
         chatHistory={chatHistory} // Pass chat history to Sidebar
       />
 
       <div className={`flex flex-col flex-1 bg-white transition-all duration-300 ${sidebarExpanded ? 'ml-16' : 'ml-2'}`}>
+        {/* Render the MainComponent with login/logout buttons */}
+        <MainComponent />
+        
         <Header sidebarExpanded={sidebarExpanded} />
 
         <div className="flex-grow">
