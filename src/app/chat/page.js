@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth0 } from "@auth0/auth0-react";
+import { useUser } from '@auth0/nextjs-auth0/client';
 import axios from 'axios';
 import { useState } from 'react';
 import ChatArea from '../components/ChatArea';
@@ -14,17 +14,16 @@ import Welcome from '../components/Welcome';
 const api_url = "https://vercel-pexapi.vercel.app/";
 
 export default function ChatPage() {
-  const { isAuthenticated, loginWithRedirect } = useAuth0();
+  const { user, error, isLoading: userLoading } = useUser();
   const [messages, setMessages] = useState([]);
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
-  const [chatHistory, setChatHistory] = useState([]); // State for chat history
+  const [chatHistory, setChatHistory] = useState([]);
   const [bufferMemory, setBufferMemory] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const sendMessage = async (userInput) => {
     if (!userInput.trim()) return;
 
-    // Add the user message to chat history
     const updatedChatHistory = [
       ...chatHistory,
       { role: "user", content: userInput },
@@ -50,7 +49,7 @@ export default function ChatPage() {
       setBufferMemory(data.buffer_memory);
       const botReply = data["bot_reply"];
       updatedChatHistory.push({ role: "assistant", content: botReply });
-      setChatHistory(updatedChatHistory); // Update chat history with bot reply
+      setChatHistory(updatedChatHistory);
 
       const filteredMessages = updatedChatHistory.filter(
         (message) => message.role === "user" || message.role === "assistant"
@@ -63,16 +62,13 @@ export default function ChatPage() {
         }))
       );
 
-      // Update chat history only on the first response
-      if (filteredMessages.length === 1) { // Check if this is the first interaction
-        const date = new Date().toLocaleDateString(); // Get current date
-        const title = userInput.length > 3 ? userInput.slice(0, 3) : userInput; // Brief title from user input
-        setChatHistory(prev => [...prev, { title, date }]); // Add to chat history
+      if (filteredMessages.length === 1) {
+        const date = new Date().toLocaleDateString();
+        const title = userInput.length > 3 ? userInput.slice(0, 3) : userInput;
+        setChatHistory(prev => [...prev, { title, date }]);
       }
 
       setIsLoading(false);
-
-      // Trigger typing animation for bot's reply
       animateBotReply(botReply);
     } catch (error) {
       console.error("Error fetching chatbot response:", error);
@@ -85,7 +81,7 @@ export default function ChatPage() {
   };
 
   const handlePromptClick = (prompt) => {
-    sendMessage(prompt); // Assuming sendMessage can accept the prompt directly
+    sendMessage(prompt);
   };
 
   const handleSendMessage = (message) => {
@@ -94,16 +90,16 @@ export default function ChatPage() {
     }
   };
 
-  // MainComponent to display login/logout based on authentication status
   const MainComponent = () => {
     return (
       <div className="auth-buttons">
-        {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+        {user ? <LogoutButton /> : <LoginButton />}
       </div>
     );
   };
 
-  if (!isAuthenticated) {
+  if (userLoading) return <div>Loading...</div>;
+  if (!user) {
     return (
       <div className="flex items-center justify-center h-screen">
         <p>Please log in to access the chat.</p>
@@ -117,11 +113,10 @@ export default function ChatPage() {
       <Sidebar
         isExpanded={sidebarExpanded}
         toggleSidebar={toggleSidebar}
-        chatHistory={chatHistory} // Pass chat history to Sidebar
+        chatHistory={chatHistory}
       />
 
       <div className={`flex flex-col flex-1 bg-white transition-all duration-300 ${sidebarExpanded ? 'ml-16' : 'ml-2'}`}>
-        {/* Render the MainComponent with login/logout buttons */}
         <MainComponent />
         
         <Header sidebarExpanded={sidebarExpanded} />

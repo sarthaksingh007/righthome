@@ -1,7 +1,10 @@
-import { useAuth0 } from "@auth0/auth0-react";
+'use client';
+
+import { useUser } from '@auth0/nextjs-auth0'; // Import useUser
 
 const LogoutButton = () => {
-    const { logout } = useAuth0();
+  const { logout } = useUser(); // Get logout function from useUser hook
+
     return (
     <button onClick={() => logout({ returnTo: window.location.origin })}>
         Log Out
