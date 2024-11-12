@@ -2,6 +2,7 @@
 
 import { useUser } from '@auth0/nextjs-auth0'; // Import useUser
 
+
 export default function Header({ sidebarExpanded, toggleSidebar }) {
   const { user, error, isLoading } = useUser(); // Get user data, loading state, and errors
 

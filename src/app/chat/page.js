@@ -1,6 +1,6 @@
 'use client';
 
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { UserProvider, useUser } from '@auth0/nextjs-auth0/client';
 import axios from 'axios';
 import { useState } from 'react';
 import ChatArea from '../components/ChatArea';
@@ -12,6 +12,16 @@ import Sidebar from '../components/Sidebar';
 import Welcome from '../components/Welcome';
 
 const api_url = "https://vercel-pexapi.vercel.app/";
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+    <UserProvider>
+      <body>{children}</body>
+    </UserProvider>
+    </html>
+  );
+}
 
 export default function ChatPage() {
   const { user, error, isLoading: userLoading } = useUser();
@@ -97,6 +107,7 @@ export default function ChatPage() {
       </div>
     );
   };
+  
 
   if (userLoading) return <div>Loading...</div>;
   if (!user) {
@@ -107,6 +118,8 @@ export default function ChatPage() {
       </div>
     );
   }
+
+
 
   return (
     <div className="flex h-screen">
