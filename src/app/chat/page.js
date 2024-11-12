@@ -13,15 +13,6 @@ import Welcome from '../components/Welcome';
 
 const api_url = "https://vercel-pexapi.vercel.app/";
 
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-    <UserProvider>
-      <body>{children}</body>
-    </UserProvider>
-    </html>
-  );
-}
 
 export default function ChatPage() {
   const { user, error, isLoading: userLoading } = useUser();

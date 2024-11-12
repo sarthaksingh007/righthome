@@ -1,4 +1,4 @@
-import { Auth0Provider } from "@auth0/auth0-react";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -26,15 +26,11 @@ const auth0RedirectUri = "http://localhost:3000/callback";
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <Auth0Provider
-        domain={auth0Domain}
-        clientId={auth0ClientId}
-        redirectUri={auth0RedirectUri}
-      >
+      <UserProvider>
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
           {children}
         </body>
-      </Auth0Provider>
+      </UserProvider>
     </html>
   );
 }

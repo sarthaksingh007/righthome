@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useUser } from '@auth0/nextjs-auth0'; // Import useUser
+import { useUser } from "@auth0/nextjs-auth0/client"; // Import useUser
 
 const LoginButton = () => {
-    const { loginWithRedirect } = useUser(); // Get login function from useUser hook
+  const { loginWithRedirect } = useUser(); // Get login function from useUser hook
 
-    return <button onClick={() => loginWithRedirect()}>Log In</button>;
+  return <button onClick={() => loginWithRedirect()}>Log In</button>;
 };
 
 export default LoginButton;
